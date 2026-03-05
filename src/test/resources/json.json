@@ -1,0 +1,26 @@
+{
+  "prop1": 123,
+  "prop2": {
+    "sub-1": 100,
+    "sub-2": "sime string"
+  },
+  "arr1": [
+    "ttt"
+  ]
+}
+
+{
+  "prop1": 123,
+  "prop2": {
+    "sub-1": 100
+  }
+}
+
+{
+  "prop2": {
+    "sub-2": "sime string"
+  },
+  "arr1": [
+    "ttt"
+  ]
+}
