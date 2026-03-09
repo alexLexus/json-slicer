@@ -1,36 +1,53 @@
-{
-  "orders": [
-    {
-      "id": "ORD-001",
-      "date": "2024-01-15",
-      "items": [
-        {
-          "product": "laptop",
-          "price": 999.99
-        },
-        {
-          "product": "mouse",
-          "price": 29.99
-        }
-      ]
-    },
-    {
-      "id": "ORD-002",
-      "date": "2024-01-16",
-      "items": [
-        {
-          "product": "keyboard",
-          "price": 89.99
-        },
-        {
-          "product": "monitor",
-          "price": 299.99
-        }
-      ]
+[
+  {
+    "type": "OBJECT",
+    "name": null,
+    "index": 0,
+    "weight": 49,
+    "children": {
+      "3": {
+        "type": "SCALAR",
+        "name": "3",
+        "index": 0,
+        "weight": 3,
+        "value": "1"
+      },
+      "4": {
+        "type": "SCALAR",
+        "name": "4",
+        "index": 0,
+        "weight": 3,
+        "value": "1"
+      },
+      "5": {
+        "type": "SCALAR",
+        "name": "5",
+        "index": 0,
+        "weight": 3,
+        "value": "1"
+      },
+      "first": {
+        "type": "SCALAR",
+        "name": "first",
+        "index": 0,
+        "weight": 15,
+        "value": "Test string 1"
+      }
     }
-  ],
-  "metadata": {
-    "version": "1.0",
-    "timestamp": "2024-01-20T10:30:00Z"
+  },
+  {
+    "type": "OBJECT",
+    "name": null,
+    "index": 0,
+    "weight": 26,
+    "children": {
+      "second": {
+        "type": "SCALAR",
+        "name": "second",
+        "index": 0,
+        "weight": 15,
+        "value": "Test string 2"
+      }
+    }
   }
-}
+]
