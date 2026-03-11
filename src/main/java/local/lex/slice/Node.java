@@ -1,15 +1,12 @@
 package local.lex.slice;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
-import lombok.extern.jackson.Jacksonized;
 
 import java.util.*;
 
-@Data
-@AllArgsConstructor
-@RequiredArgsConstructor
-@Builder
-@Jacksonized
+@Getter
+@Setter
 public class Node implements Comparable<Node> {
 
     @Getter
@@ -30,8 +27,13 @@ public class Node implements Comparable<Node> {
 
     private final List<Chunk> chunks = new ArrayList<>();
 
+    @JsonIgnore
     private Node parent;
 
+    public Node(Node.Type type, String name, int index) {
+        this.type = type;
+        this.path = new NodePath.Fragment(type, name, index);
+    }
 
     public int weight() {
         int partSize = chunks.isEmpty() ? 0 : chunks.stream().mapToInt(it -> it.data().length).sum();
@@ -169,28 +171,24 @@ public class Node implements Comparable<Node> {
                     + this.getChunks().size() + " order=" + this.getChunks().get(0).order());
         }
 
+        Node copy = new Node(this.getType(), this.getPath().name(), this.getPath().index());
         Chunk original = this.chunks.get(0);
         byte[] data = original.data();
         if (size >= data.length) {
-            Node copy = new Node(this.getType(), this.getPath());
             copy.addChunk(original);
             this.chunks.clear();
-            return copy;
         } else {
             byte[] toMove = Arrays.copyOfRange(data, 0, size);
             byte[] toStore = Arrays.copyOfRange(data, size, data.length);
-
-            Node copy = new Node(this.getType(), this.getPath());
             copy.addChunk(new Chunk(toMove, original.order()));
-
             this.chunks.clear();
             this.chunks.add(new Chunk(toStore, original.order() + 1));
-            return copy;
         }
+        return copy;
     }
 
     private Node sliceChildren(int size) {
-        Node copy = new Node(this.getType(), this.getPath());
+        Node copy = new Node(this.getType(), this.getPath().name(), this.getPath().index());
         int remaining = size;
         List<Node> childrenCopy = new ArrayList<>(children.values());
         childrenCopy.sort(Comparator.naturalOrder());

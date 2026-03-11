@@ -5,6 +5,6 @@ import lombok.extern.jackson.Jacksonized;
 
 @Builder
 @Jacksonized
-public record FlatNode(NodePath path, String data, int order) {
+public record FlatChunk(NodePath path, String data, int order) {
 
 }

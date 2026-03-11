@@ -2,24 +2,23 @@ package local.lex.slice;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import local.lex.slice.serde.NodePathSerializer;
+import lombok.Builder;
 import lombok.Data;
+import lombok.extern.jackson.Jacksonized;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Data
 @JsonSerialize(using = NodePathSerializer.class)
 public final class NodePath implements Comparable<NodePath> {
 
-    @Data
-    public static class Fragment implements Comparable<Fragment> {
-
-        private final String name;
-
-        private final int index;
-
-        private Node node;
+    @Builder
+    @Jacksonized
+    public record Fragment(Node.Type type, String name, int index) implements Comparable<Fragment> {
 
         public boolean hasName() {
             return name != null;
@@ -66,9 +65,24 @@ public final class NodePath implements Comparable<NodePath> {
         public int hashCode() {
             return Objects.hash(name, index);
         }
+
+        @Override
+        public String toString() {
+            String key = this.hasName() ? this.name() : String.valueOf(this.index());
+            return String.format("%s:[%s]", type.getCode(), key);
+        }
     }
 
-    private final LinkedList<Fragment> fragments = new LinkedList<>();
+    private final LinkedList<Fragment> fragments;
+
+    public NodePath() {
+        this.fragments = new LinkedList<>();
+    }
+
+    public NodePath(Collection<NodePath.Fragment> fragments) {
+        this.fragments = new LinkedList<>();
+        this.fragments.addAll(fragments);
+    }
 
     public void append(Fragment fragment) {
         Objects.requireNonNull(fragment, "Can't add null fragment");
@@ -78,6 +92,10 @@ public final class NodePath implements Comparable<NodePath> {
     public void prepend(Fragment fragment) {
         Objects.requireNonNull(fragment, "Can't add null fragment");
         fragments.addFirst(fragment);
+    }
+
+    public NodePath copy() {
+        return new NodePath();
     }
 
     @Override
@@ -111,5 +129,12 @@ public final class NodePath implements Comparable<NodePath> {
         }
 
         return Integer.compare(this.fragments.size(), other.fragments.size());
+    }
+
+    @Override
+    public String toString() {
+        return fragments.stream()
+                .map(Objects::toString)
+                .collect(Collectors.joining(";"));
     }
 }

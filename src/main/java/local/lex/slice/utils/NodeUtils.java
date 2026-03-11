@@ -2,7 +2,7 @@ package local.lex.slice.utils;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import local.lex.slice.Chunk;
-import local.lex.slice.FlatNode;
+import local.lex.slice.FlatChunk;
 import local.lex.slice.Node;
 import local.lex.slice.NodePath;
 
@@ -16,19 +16,20 @@ public class NodeUtils {
         return traverse(json, "$", 0);
     }
 
-    public static List<FlatNode> flattering(Node root) {
-        List<FlatNode> flatNodes = new ArrayList<>();
+    public static List<FlatChunk> flattering(Node root) {
+        List<FlatChunk> flatNodes = new ArrayList<>();
         Stack<Node> stack = new Stack<>();
         stack.push(root);
         while (!stack.isEmpty()) {
             Node node = stack.pop();
-            node.getChildren().values().forEach(stack::push);
             if (node.getType() == Node.Type.STRING) {
                 NodePath path = node.pathToParent();
                 for (Chunk chunk : node.getChunks()) {
-                    FlatNode flatNode = new FlatNode(path, new String(chunk.data()), chunk.order());
+                    FlatChunk flatNode = new FlatChunk(path, new String(chunk.data()), chunk.order());
                     flatNodes.add(flatNode);
                 }
+            } else {
+                node.getChildren().values().forEach(stack::push);
             }
         }
         return flatNodes;
@@ -41,18 +42,15 @@ public class NodeUtils {
     }
 
     private static Node traverse(JsonNode json, String name, int index) {
-        NodePath.Fragment path = new NodePath.Fragment(name, index);
         Node node;
         if (json.isArray()) {
-            node = new Node(Node.Type.ARRAY, path);
-            path.setNode(node);
+            node = new Node(Node.Type.ARRAY, name, index);
             for (int i = 0; i < json.size(); i++) {
                 Node child = traverse(json.get(i), null, i);
                 node.append(child);
             }
         } else if (json.isObject()) {
-            node = new Node(Node.Type.OBJECT, path);
-            path.setNode(node);
+            node = new Node(Node.Type.OBJECT, name, index);
             int i = 0;
             for (Map.Entry<String, JsonNode> entry : json.properties()) {
                 Node child = traverse(entry.getValue(), entry.getKey(), i++);
@@ -61,8 +59,7 @@ public class NodeUtils {
         } else {
             byte[] data = json.asText().getBytes(StandardCharsets.UTF_8);
             Chunk chunk = new Chunk(data, 0);
-            node = new Node(Node.Type.STRING, path);
-            path.setNode(node);
+            node = new Node(Node.Type.STRING, name, index);
             node.addChunk(chunk);
         }
 
@@ -75,7 +72,7 @@ public class NodeUtils {
         }
         indent(sb, indent);
         // header: path, type, weight
-        String key = node.getPath().hasName() ? node.getPath().getName() : String.valueOf(node.getPath().getIndex());
+        String key = node.getPath().hasName() ? node.getPath().name() : String.valueOf(node.getPath().index());
         sb.append(key)
                 .append("(").append(node.getType()).append(")")
                 .append("[").append(node.weight()).append("]")
@@ -86,7 +83,7 @@ public class NodeUtils {
             sb.append("chunks:");
             List<String> chunks = node.getChunks().stream()
                     .sorted(Comparator.naturalOrder())
-                    .map(c -> "[" + c.order() + "]=" + c.data().length)
+                    .map(c -> "[" + c.order() + "]=" + new String(c.data()))
                     .collect(Collectors.toList());
             sb.append(String.join(", ", chunks));
             sb.append(System.lineSeparator());
