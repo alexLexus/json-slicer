@@ -1,32 +1,9 @@
-[
-  {
-    "path": "o:[$];s:[test]",
-    "data": "1",
-    "order": 0
-  },
-  {
-    "path": "o:[$];o:[second];o:[prop3];s:[field]",
-    "data": "value value value value value value",
-    "order": 0
-  },
-  {
-    "path": "o:[$];o:[second];a:[prop2];s:[2]",
-    "data": "true",
-    "order": 0
-  },
-  {
-    "path": "o:[$];o:[second];a:[prop2];s:[1]",
-    "data": "100",
-    "order": 0
-  },
-  {
-    "path": "o:[$];o:[second];a:[prop2];s:[0]",
-    "data": "item",
-    "order": 0
-  },
-  {
-    "path": "o:[$];o:[second];s:[prop1]",
-    "data": "100",
-    "order": 0
+{
+  "test": "Long strong with whitespaces to slice Long strong with whitespaces to slice Long strong with whitespaces to slice Long strong with whitespaces to slice Long strong with whitespaces to slice Long strong with whitespaces to slice Long strong with whitespaces to slice ",
+  "node": {
+    "field-1": "text",
+    "field-2": {
+      "prop": 100
+    }
   }
-]
+}
