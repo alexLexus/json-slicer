@@ -1,9 +1,0 @@
-{
-  "test": "Long strong with whitespaces to slice Long strong with whitespaces to slice Long strong with whitespaces to slice Long strong with whitespaces to slice Long strong with whitespaces to slice Long strong with whitespaces to slice Long strong with whitespaces to slice ",
-  "node": {
-    "field-1": "text",
-    "field-2": {
-      "prop": 100
-    }
-  }
-}
